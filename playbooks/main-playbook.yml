@@ -1,0 +1,21 @@
+- hosts: servers
+  become: true
+  gather_facts: False
+
+  roles:
+    - role: deploy_my_app
+      vars:
+        MIX_ENV: prod
+        PHX_SERVER: true
+        HOST: "{{ HOST }}"
+        PHX_HOST: "{{ PHX_HOST }}"
+        PHX_PORT: "{{ PORT }}"
+        PORT: "{{ PHX_PORT }}"
+        RELEASE_NAME: "latest"
+        SECRET_KEY_BASE: "4OtKL7lQPW7LTXnBHFJ1KcOgkrV4dCOOCUnDsZ+foKrX5RFFrE+Udl+TCfpuNtVJ"
+      environment:
+        HOST: "{{ HOST }}"
+        PHX_HOST: "{{ PHX_HOST }}"
+        PORT: "{{ PORT }}"
+        PHX_PORT: "{{ PHX_PORT }}"
+        DATABASE_URL: "{{ DATABASE_URL }}"

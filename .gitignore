@@ -1,0 +1,15 @@
+# Folders starting with _underscores
+_*
+# Hidden folders
+.*
+!.gitignore
+# Terraform State
+terraform.tfstate*
+user.tfvars
+prod.tfvars
+
+*.pem
+**/files/keys/*
+**/!files/keys/.gitkeep
+
+debug

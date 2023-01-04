@@ -1,0 +1,77 @@
+---
+# tasks file for deploy_my_app
+- name: Prints two lines of messages, but only if there is an environment value set
+  ansible.builtin.debug:
+    msg:
+    - "DATABASE_URL: {{DATABASE_URL}}"
+    - "PHX_HOST: {{PHX_HOST}}"
+    
+- name: Example clone of a single branch
+  ansible.builtin.git:
+    repo: https://github.com/mchavezi/my_app.git
+    dest: /home/ubuntu/my_app
+
+- name: Build Docker image
+  ansible.builtin.shell: docker build . -t my-app:latest
+  args:
+    chdir: /home/ubuntu/my_app
+    
+- name: Make an proxy/conf.d directory inside my-demo directory
+  ansible.builtin.file:
+    path: /home/ubuntu/proxy/conf.d/
+    owner: ubuntu
+    group: docker
+    state: directory
+    mode: '0755'
+    
+- name: Add conf.d
+  template: 
+    src: ../templates/proxy/conf.d/my_app.conf.j2
+    dest: /home/ubuntu/proxy/conf.d/my_app.conf
+    owner: ubuntu
+    group: docker
+
+- name: Run Docker Compose with inline v3.7
+  docker_compose:
+    project_name: demo
+    definition:
+      version: '3.7'
+      services:
+        web:
+          image: "my-app:latest"
+          environment:
+            Container: ELIXIR
+            HOST: "{{HOST}}"
+            PHX_HOST: "{{PHX_HOST}}"
+            PHX_PORT: "{{PHX_PORT}}"
+            PHX_SERVER: "True"
+            RELEASE_NAME: "{{RELEASE_NAME}}"
+            MIX_ENV: "{{MIX_ENV}}"
+            SECRET_KEY_BASE: "{{SECRET_KEY_BASE}}"
+            PORT: "{{PORT}}"
+            DATABASE_URL: "{{DATABASE_URL}}"
+          ports:
+            - "{{PORT}}:{{PORT}}"
+        nginx-proxy:
+          image: "nginx"
+          ports:
+            - "80:80"
+          volumes:
+            - "/home/ubuntu/proxy/conf.d:/etc/nginx/conf.d:ro"
+          links:
+            - "web"
+  register: output
+
+- debug:
+    var: output
+    
+# - name: Stop web services
+#   docker_container:
+#     name: demo_web_1
+#     state: absent
+
+# - name: Stop nginx-proxy services
+#   docker_container:
+#     name: demo_nginx-proxy_1
+#     state: absent
+
