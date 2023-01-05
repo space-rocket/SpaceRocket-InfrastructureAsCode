@@ -47,8 +47,8 @@ resource "aws_lb_listener" "sre_front_end" {
   load_balancer_arn = aws_lb.sre_lb.arn
   port              = 443
   protocol          = "HTTPS"
-    ssl_policy        = "ELBSecurityPolicy-2016-08"
-    certificate_arn = aws_acm_certificate_validation.example.certificate_arn
+  ssl_policy        = "ELBSecurityPolicy-2016-08"
+  certificate_arn   = aws_acm_certificate_validation.example.certificate_arn
 
   default_action {
     type             = "forward"

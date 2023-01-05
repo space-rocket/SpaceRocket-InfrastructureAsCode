@@ -5,8 +5,8 @@ data "aws_route53_zone" "example" {
 
 resource "aws_route53_record" "sre_route53_record" {
   zone_id = data.aws_route53_zone.example.zone_id
-  name = "smokewares.com"
-  type = "A"
+  name    = "smokewares.com"
+  type    = "A"
 
   alias {
     name                   = aws_lb.sre_lb.dns_name
