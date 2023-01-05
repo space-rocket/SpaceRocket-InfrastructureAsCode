@@ -26,7 +26,7 @@ resource "aws_lb" "sre_lb" {
   name               = "sre-lb"
   internal           = false
   load_balancer_type = "application"
-  security_groups    = [aws_security_group.sre_sg.id]
+  security_groups    = [aws_security_group.sre_sg.id, aws_security_group.sre_alb_sg.id]
   subnets            = aws_subnet.sre_public_subnet.*.id
 
   # enable_deletion_protection = true

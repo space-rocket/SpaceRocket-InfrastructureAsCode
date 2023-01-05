@@ -1,0 +1,51 @@
+---
+# tasks file for deploy_demo_docker
+- name: Prints Hello World
+  ansible.builtin.debug:
+    msg:
+    - "Hello World!"
+    
+- name: Make compose-demo directory
+  ansible.builtin.file:
+    path: /home/ubuntu/compose-demo
+    owner: ubuntu
+    group: docker
+    state: directory
+    mode: '0755'
+    
+- name: Make an app directory inside compose-demo directory
+  ansible.builtin.file:
+    path: /home/ubuntu/compose-demo/app
+    owner: ubuntu
+    group: docker
+    state: directory
+    mode: '0755'
+
+- name: Add index.html
+  template: 
+    src: ../files/index.html 
+    dest: /home/ubuntu/compose-demo/app/index.html
+    owner: ubuntu
+    group: docker
+  
+- name: Add docker-compose.yml
+  template: 
+    src: ../files/docker-compose.yml 
+    dest: /home/ubuntu/compose-demo/docker-compose.yml
+    owner: ubuntu
+    group: docker
+
+- name: get the username running the deploy
+  become: false
+  local_action: command whoami
+  register: username_on_the_host
+
+- debug: var=username_on_the_host  
+
+- name: Run "docker-compose up"
+  become: false
+  community.docker.docker_compose:
+    project_src: /home/ubuntu/compose-demo
+    project_name: compose-demo
+  register: output
+  # debugger: on_failed
