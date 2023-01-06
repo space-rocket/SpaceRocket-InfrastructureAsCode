@@ -28,16 +28,6 @@ variable "private_cidrs" {
   default = ["10.123.2.0/24", "10.123.4.0/24"]
 }
 
-variable "subnet2_cidr" {
-  type    = string
-  default = "10.123.6.0/24"
-}
-
-variable "subnet3_cidr" {
-  type    = string
-  default = "10.123.8.0/24"
-}
-
 variable "main_instance_type" {
   type    = string
   default = "t2.micro"
@@ -68,10 +58,6 @@ variable "main_domain_name" {
   type = string
 }
 
-variable "letsencrypt_email" {
-  type = string
-}
-
 variable "db_name" {
   description = "RDS database name"
   default     = "default_db_name"
@@ -89,21 +75,17 @@ variable "db_password" {
   sensitive   = true
 }
 
-variable "github_token" {
-  description = "Github token to get latest archive. Visit https://github.com/settings/tokens to get new token"
-  sensitive   = true
-}
-
-variable "github_user" {
-  type        = string
-  description = "Github repo ex: octocat"
-}
-
-variable "github_repo" {
+variable "git_url" {
   type        = string
   description = "Github repo ex: Spoon-Knife"
+  default     = "https://github.com/space-rocket/my_app.git"
 }
 
+variable "has_db" {
+  type        = bool
+  description = "Does your app use a DB?"
+  default     = false
+}
 
 
 

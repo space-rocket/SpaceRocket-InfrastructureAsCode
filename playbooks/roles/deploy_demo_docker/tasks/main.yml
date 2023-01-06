@@ -3,7 +3,7 @@
 - name: Prints Hello World
   ansible.builtin.debug:
     msg:
-    - "Hello World!"
+    - "running tasks file for deploy_demo_docker..."
     
 - name: Make compose-demo directory
   ansible.builtin.file:

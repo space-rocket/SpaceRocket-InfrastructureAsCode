@@ -91,23 +91,23 @@ resource "aws_security_group" "sre_alb_sg" {
   name        = "alb_sg"
   description = "Security group for alb to communicate with app instances"
   vpc_id      = aws_vpc.sre_vpc.id
-  
+
   ingress {
-    description      = "Allow ALB access on port 80"
-    from_port        = 80
-    to_port          = 80
-    protocol         = "tcp"
-    cidr_blocks      = ["0.0.0.0/0"]
+    description = "Allow ALB access on port 80"
+    from_port   = 80
+    to_port     = 80
+    protocol    = "tcp"
+    cidr_blocks = ["0.0.0.0/0"]
   }
-  
+
   ingress {
-    description      = "Allow ALB access on port 80"
-    from_port        = 443
-    to_port          = 443
-    protocol         = "tcp"
-    cidr_blocks      = ["0.0.0.0/0"]
+    description = "Allow ALB access on port 80"
+    from_port   = 443
+    to_port     = 443
+    protocol    = "tcp"
+    cidr_blocks = ["0.0.0.0/0"]
   }
-  
+
   egress {
     from_port        = 0
     to_port          = 0
@@ -121,21 +121,21 @@ resource "aws_security_group" "sre_app_sg" {
   name        = "app_sg"
   description = "Security group for app instances"
   vpc_id      = aws_vpc.sre_vpc.id
-  
+
   ingress {
-    description      = "allow ssh from cloud9 instance"
-    from_port        = 22
-    to_port          = 22
-    protocol         = "tcp"
-    cidr_blocks      = [var.cloud9_ip]
+    description = "allow ssh from cloud9 instance"
+    from_port   = 22
+    to_port     = 22
+    protocol    = "tcp"
+    cidr_blocks = [var.cloud9_ip]
   }
-  
+
   ingress {
-    description      = "Allow ALB access on port 80"
-    from_port        = 80
-    to_port          = 80
-    protocol         = "tcp"
-    security_groups  = [aws_security_group.sre_alb_sg.id]
+    description     = "Allow ALB access on port 80"
+    from_port       = 80
+    to_port         = 80
+    protocol        = "tcp"
+    security_groups = [aws_security_group.sre_alb_sg.id]
   }
 
   egress {
