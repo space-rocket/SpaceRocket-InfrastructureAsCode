@@ -87,6 +87,17 @@ variable "has_db" {
   default     = false
 }
 
+variable "deploy_demo_docker" {
+  type        = bool
+  description = "Deploy demo Docker app?"
+  default     = false
+}
+
+variable "deploy_my_app" {
+  type        = bool
+  description = "Deploy Elixir Phoenix application called my_app?"
+  default     = false
+}
 
 
 

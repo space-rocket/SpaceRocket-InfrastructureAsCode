@@ -1,12 +1,14 @@
 locals {
   ansible_vars = templatefile("./ansible-vars.json.tpl", {
-    PHX_HOST = var.main_domain_name
-    HOST     = var.main_domain_name
-    PORT     = "8080"
-    PHX_PORT = "8080"
-    # DATABASE_URL = join("", ["ecto://", aws_db_instance.sre_db.username, ":", var.db_password, "@", aws_db_instance.sre_db.address, ":", aws_db_instance.sre_db.port, "/", var.db_name])
-    DATABASE_URL = var.has_db ? "Yea" : "NO"
-    GIT_URL      = var.git_url
+    PHX_HOST           = var.main_domain_name
+    HOST               = var.main_domain_name
+    PORT               = "8080"
+    PHX_PORT           = "8080"
+    DATABASE_URL       = var.has_db ? join("", ["ecto://", aws_db_instance.sre_db[1].username, ":", var.db_password, "@", aws_db_instance.sre_db[1].address, ":", aws_db_instance.sre_db[1].port, "/", var.db_name]) : "No DB"
+    GIT_URL            = var.git_url
+    HAS_DB             = var.has_db
+    DEPLOY_DEMO_DOCKER = var.deploy_demo_docker
+    DEPLOY_MY_APP      = var.deploy_my_app
   })
 }
 
@@ -107,9 +109,9 @@ resource "null_resource" "main-playbook" {
   provisioner "local-exec" {
     command = "export ANSIBLE_HOST_KEY_CHECKING=False && ansible-playbook -i hosts.txt --key-file /home/ubuntu/.ssh/devops_rsa playbooks/main-playbook.yml --extra-vars '${local.ansible_vars}'"
   }
-  # triggers = {
-  #   always_run = timestamp()
-  # }
+  triggers = {
+    always_run = timestamp()
+  }
   depends_on = [null_resource.ssh]
 }
 
@@ -147,5 +149,5 @@ output "rds_db_name" {
 }
 
 output "instance_ips" {
-  value = { for i in aws_instance.sre_main[*] : i.tags.Name => "${i.public_ip}" }
+  value = { for i in aws_instance.sre_main[*] : i.tags.Name => "Log into instance: ssh -i ~/.ssh/devops_rsa ubuntu@${i.public_ip}" }
 }

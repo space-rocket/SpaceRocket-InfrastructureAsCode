@@ -43,6 +43,29 @@ resource "aws_lb" "sre_lb" {
 }
 
 
+resource "aws_lb_listener_rule" "redirect_http_to_https" {
+  listener_arn = aws_lb_listener.sre_front_end.arn
+
+  priority     = 100
+
+  action {
+    type = "fixed-response"
+
+    fixed_response {
+      content_type = "text/plain"
+      status_code  = "444"
+    }
+  }
+
+  condition {
+    host_header {
+      values = [aws_lb.sre_lb.dns_name]
+    }
+  }
+}
+
+
+
 resource "aws_lb_listener" "sre_front_end" {
   load_balancer_arn = aws_lb.sre_lb.arn
   port              = 443
