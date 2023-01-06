@@ -35,17 +35,20 @@
     owner: ubuntu
     group: docker
 
-- name: get the username running the deploy
-  become: false
-  local_action: command whoami
-  register: username_on_the_host
+- name: Get running containers
+  docker_host_info:
+    containers: yes
+  register: docker_info
 
-- debug: var=username_on_the_host  
-
+- name: Stop running containers
+  docker_container:
+    name: "{{ item }}"
+    state: stopped
+  loop: "{{ docker_info.containers | map(attribute='Id') | list }}"
+  
 - name: Run "docker-compose up"
   become: false
   community.docker.docker_compose:
     project_src: /home/ubuntu/compose-demo
     project_name: compose-demo
   register: output
-  # debugger: on_failed

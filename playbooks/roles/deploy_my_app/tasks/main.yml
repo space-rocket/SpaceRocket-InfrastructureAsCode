@@ -1,11 +1,11 @@
 ---
 # tasks file for deploy_my_app
-- name: Prints two lines of messages, but only if there is an environment value set
+- name: Print environment vars
   ansible.builtin.debug:
     msg:
     - "DATABASE_URL: {{DATABASE_URL}}"
     - "PHX_HOST: {{PHX_HOST}}"
-    
+
 - name: Example clone of a single branch
   ansible.builtin.git:
     repo: "{{GIT_URL}}"
@@ -31,6 +31,17 @@
     owner: ubuntu
     group: docker
 
+- name: Get running containers
+  docker_host_info:
+    containers: yes
+  register: docker_info
+
+- name: Stop running containers
+  docker_container:
+    name: "{{ item }}"
+    state: stopped
+  loop: "{{ docker_info.containers | map(attribute='Id') | list }}"
+  
 - name: Run Docker Compose with inline v3.7
   docker_compose:
     project_name: demo
@@ -64,14 +75,3 @@
 
 - debug:
     var: output
-    
-# - name: Stop web services
-#   docker_container:
-#     name: demo_web_1
-#     state: absent
-
-# - name: Stop nginx-proxy services
-#   docker_container:
-#     name: demo_nginx-proxy_1
-#     state: absent
-
