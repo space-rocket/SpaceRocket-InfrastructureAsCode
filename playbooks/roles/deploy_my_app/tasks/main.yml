@@ -8,7 +8,7 @@
     
 - name: Example clone of a single branch
   ansible.builtin.git:
-    repo: "{{GIT_URL}}""
+    repo: "{{GIT_URL}}"
     dest: /home/ubuntu/my_app
 
 - name: Build Docker image
