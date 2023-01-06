@@ -4,7 +4,7 @@ locals {
     HOST               = var.main_domain_name
     PORT               = "8080"
     PHX_PORT           = "8080"
-    DATABASE_URL       = var.has_db ? join("", ["ecto://", aws_db_instance.sre_db[1].username, ":", var.db_password, "@", aws_db_instance.sre_db[1].address, ":", aws_db_instance.sre_db[1].port, "/", var.db_name]) : "No DB"
+    DATABASE_URL       = var.has_db ? join("", ["ecto://", aws_db_instance.sre_db[0].username, ":", var.db_password, "@", aws_db_instance.sre_db[0].address, ":", aws_db_instance.sre_db[0].port, "/", var.db_name]) : "No DB"
     GIT_URL            = var.git_url
     HAS_DB             = var.has_db
     DEPLOY_DEMO_DOCKER = var.deploy_demo_docker
@@ -64,8 +64,7 @@ resource "aws_db_instance" "sre_db" {
 
 # EC2
 resource "aws_instance" "sre_main" {
-  depends_on = []
-  # depends_on             = [aws_db_instance.sre_db]
+  depends_on             = [aws_db_instance.sre_db]
   count                  = var.main_instance_count
   instance_type          = var.main_instance_type
   ami                    = data.aws_ami.server_ami.id
