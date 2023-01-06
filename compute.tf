@@ -114,26 +114,30 @@ resource "null_resource" "main-playbook" {
   depends_on = [null_resource.ssh]
 }
 
-# output "RDS-Endpoint" {
-#   description = "RDS instance hostname"
-#   value = var.has_db ? aws_db_instance.sre_db.endpoint : null
-# }
+output "RDS-Endpoint" {
+  description = "RDS instance hostname"
+  value = var.has_db ? aws_db_instance.sre_db[0].endpoint : null
+}
 
-# output "RDS_HOSTNAME" {
-#   description = "RDS instance hostname"
-#   value       = var.has_db ? aws_db_instance.sre_db.address : null
-#   sensitive   = true
-# }
+output "RDS_HOSTNAME" {
+  description = "RDS instance hostname"
+  value       = var.has_db ? aws_db_instance.sre_db[0].address : null
+}
 
-# output "rds_port" {
-#   description = "RDS instance port"
-#   value       = var.has_db ? aws_db_instance.sre_db.port : null
-# }
+output "rds_port" {
+  description = "RDS instance port"
+  value       = var.has_db ? aws_db_instance.sre_db[0].port : null
+}
 
-# output "rds_username" {
-#   description = "RDS instance root username"
-#   value       = var.has_db ? aws_db_instance.sre_db.username : null
-# }
+output "rds_username" {
+  description = "RDS instance root username"
+  value       = var.has_db ? aws_db_instance.sre_db[0].username : null
+}
+
+output "rds_db_name" {
+  description = "RDS DB Name"
+  value       = var.has_db ? var.db_name : null
+}
 
 output "rds_password" {
   description = "RDS password"
@@ -141,12 +145,11 @@ output "rds_password" {
   sensitive   = true
 }
 
-output "rds_db_name" {
-  description = "RDS DB Name"
-  value       = var.has_db ? var.db_name : null
-  sensitive   = true
+output "lb_dns_name" {
+  description = "ALB DNS Name"
+  value       = aws_lb.sre_lb.dns_name
 }
 
-output "instance_ips" {
-  value = { for i in aws_instance.sre_main[*] : i.tags.Name => "Log into instance: ssh -i ~/.ssh/devops_rsa ubuntu@${i.public_ip}" }
+output "ssh_into_instance_ips" {
+  value = { for i in aws_instance.sre_main[*] : i.tags.Name => "ssh -i ~/.ssh/devops_rsa ubuntu@${i.public_ip}" }
 }
