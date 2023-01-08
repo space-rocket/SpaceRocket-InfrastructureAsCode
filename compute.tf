@@ -114,39 +114,34 @@ resource "null_resource" "main-playbook" {
   depends_on = [null_resource.ssh]
 }
 
-output "RDS-Endpoint" {
-  description = "RDS instance hostname"
-  value = var.has_db ? aws_db_instance.sre_db[0].endpoint : null
-}
-
 output "RDS_HOSTNAME" {
   description = "RDS instance hostname"
   value       = var.has_db ? aws_db_instance.sre_db[0].address : null
 }
 
-output "rds_port" {
+output "RDS_PORT" {
   description = "RDS instance port"
   value       = var.has_db ? aws_db_instance.sre_db[0].port : null
 }
 
-output "rds_username" {
+output "RDS_USERNAME" {
   description = "RDS instance root username"
   value       = var.has_db ? aws_db_instance.sre_db[0].username : null
 }
 
-output "rds_db_name" {
+output "RDS_DB_NAME" {
   description = "RDS DB Name"
   value       = var.has_db ? var.db_name : null
 }
 
-output "rds_password" {
+output "RDS_PASSWORD" {
   description = "RDS password"
   value       = var.has_db ? var.db_password : null
   sensitive   = true
 }
 
-output "lb_dns_name" {
-  description = "ALB DNS Name"
+output "LB_DNS_NAME" {
+  description = "LB DNS Name"
   value       = aws_lb.sre_lb.dns_name
 }
 
