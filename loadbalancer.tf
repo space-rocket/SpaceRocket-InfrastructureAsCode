@@ -31,38 +31,17 @@ resource "aws_lb" "sre_lb" {
 
   enable_deletion_protection = false
 
+
   access_logs {
     bucket  = aws_s3_bucket.sre_lb_logs.bucket
+    prefix  = "sre-lb"
     enabled = true
   }
-
+  
   tags = {
     Environment = "production"
   }
 }
-
-resource "aws_s3_bucket" "sre_lb_logs" {
-  bucket = "sre-lb-log-bucket"
-
-  tags = {
-    Name        = "SRE LB Log Bucket"
-    Environment = "production"
-  }
-}
-
-resource "aws_s3_bucket_acl" "sre_lb_logs_acl" {
-  bucket = aws_s3_bucket.sre_lb_logs.id
-  acl    = "log-delivery-write"
-}
-
-resource "aws_s3_bucket_public_access_block" "my_bucket_block" {
-  bucket = aws_s3_bucket.sre_lb_logs.bucket
-
-  block_public_acls   = true
-  block_public_policy = true
-  ignore_public_acls  = true
-}
-
 
 resource "aws_lb_listener_rule" "redirect_http_to_https" {
   listener_arn = aws_lb_listener.sre_front_end.arn
@@ -84,30 +63,6 @@ resource "aws_lb_listener_rule" "redirect_http_to_https" {
     }
   }
 }
-
-# resource "aws_lb_listener_rule" "example" {
-#   listener_arn = aws_lb_listener.sre_front_end.arn
-#   priority = 100
-
-#   action {
-#     type = "redirect"
-
-#     redirect {
-#       host = "www.smokewares.com"
-#       path = "/#{path}"
-#       port = 443
-#       protocol = "HTTPS"
-#       query = "#{query}"
-#       status_code = "HTTP_301"
-#     }
-#   }
-
-#   condition {
-#     path_pattern {
-#       values = ["*"]
-#     }
-#   }
-# }
 
 resource "aws_lb_listener" "sre_front_end" {
   load_balancer_arn = aws_lb.sre_lb.arn
