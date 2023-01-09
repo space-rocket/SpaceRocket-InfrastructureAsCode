@@ -19,7 +19,7 @@ data "aws_ami" "server_ami" {
 
   filter {
     name   = "name"
-    values = ["SpaceRocketUbuntuDockerAMI"]
+    values = ["SpaceRocketUbuntuAMI"]
   }
 }
 
