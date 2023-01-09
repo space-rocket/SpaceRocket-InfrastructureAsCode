@@ -1,10 +1,8 @@
-region           = "us-east-1"
-db_password      = "SuperSecretPassword"
-main_domain_name = "example.com"
-db_name          = "my_app_db"
-db_user          = "my_app_db_user"
-# For private repo uncomment below
-# github_token      = "github_pat_xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"
-# github_user       = "Your Github Username"
-# github_repo       = "Your Github Repo"
-# letsencrypt_email = "Your Email Address"
+region             = "us-east-1"
+db_password        = "supersecretmohahaha"
+db_name            = "my_app_db"
+db_user            = "my_app_db_user"
+main_domain_name   = "example.com"
+git_url            = "https://github.com/space-rocket/my_app.git"
+deploy_demo_docker = true
+deploy_my_app      = false

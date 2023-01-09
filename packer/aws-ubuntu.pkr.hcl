@@ -8,7 +8,7 @@ packer {
 }
 
 source "amazon-ebs" "ubuntu" {
-  ami_name      = "SpaceRocketUbuntuDockerAMI"
+  ami_name      = "SpaceRocketUbuntuAMI"
   instance_type = "t2.micro"
   region        = "us-east-1"
   source_ami_filter {
@@ -29,6 +29,6 @@ build {
     "source.amazon-ebs.ubuntu"
   ]
   provisioner "ansible" {
-    playbook_file = "./playbooks/main.yml"
+    playbook_file = "./playbooks/main-playbook.yml"
   }
 }

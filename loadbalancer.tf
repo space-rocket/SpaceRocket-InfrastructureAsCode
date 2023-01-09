@@ -29,24 +29,24 @@ resource "aws_lb" "sre_lb" {
   security_groups    = [aws_security_group.sre_alb_sg.id]
   subnets            = aws_subnet.sre_public_subnet.*.id
 
-  # enable_deletion_protection = true
+  enable_deletion_protection = false
 
-  #   access_logs {
-  #     bucket  = aws_s3_bucket.lb_logs.bucket
-  #     prefix  = "test-lb"
-  #     enabled = true
-  #   }
 
+  access_logs {
+    bucket  = aws_s3_bucket.sre_lb_logs.bucket
+    prefix  = "sre-lb"
+    enabled = true
+  }
+  
   tags = {
     Environment = "production"
   }
 }
 
-
 resource "aws_lb_listener_rule" "redirect_http_to_https" {
   listener_arn = aws_lb_listener.sre_front_end.arn
 
-  priority     = 100
+  priority = 200
 
   action {
     type = "fixed-response"
@@ -63,8 +63,6 @@ resource "aws_lb_listener_rule" "redirect_http_to_https" {
     }
   }
 }
-
-
 
 resource "aws_lb_listener" "sre_front_end" {
   load_balancer_arn = aws_lb.sre_lb.arn

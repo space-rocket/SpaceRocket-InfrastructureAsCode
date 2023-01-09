@@ -4,7 +4,7 @@ locals {
     HOST               = var.main_domain_name
     PORT               = "8080"
     PHX_PORT           = "8080"
-    DATABASE_URL       = var.has_db ? join("", ["ecto://", aws_db_instance.sre_db[1].username, ":", var.db_password, "@", aws_db_instance.sre_db[1].address, ":", aws_db_instance.sre_db[1].port, "/", var.db_name]) : "No DB"
+    DATABASE_URL       = var.has_db ? join("", ["ecto://", aws_db_instance.sre_db[0].username, ":", var.db_password, "@", aws_db_instance.sre_db[0].address, ":", aws_db_instance.sre_db[0].port, "/", var.db_name]) : "No DB"
     GIT_URL            = var.git_url
     HAS_DB             = var.has_db
     DEPLOY_DEMO_DOCKER = var.deploy_demo_docker
@@ -19,7 +19,7 @@ data "aws_ami" "server_ami" {
 
   filter {
     name   = "name"
-    values = ["SpaceRocketUbuntuDockerAMI"]
+    values = ["SpaceRocketUbuntuAMI"]
   }
 }
 
@@ -64,8 +64,7 @@ resource "aws_db_instance" "sre_db" {
 
 # EC2
 resource "aws_instance" "sre_main" {
-  depends_on = []
-  # depends_on             = [aws_db_instance.sre_db]
+  depends_on             = [aws_db_instance.sre_db]
   count                  = var.main_instance_count
   instance_type          = var.main_instance_type
   ami                    = data.aws_ami.server_ami.id
@@ -115,39 +114,37 @@ resource "null_resource" "main-playbook" {
   depends_on = [null_resource.ssh]
 }
 
-# output "RDS-Endpoint" {
-#   description = "RDS instance hostname"
-#   value = var.has_db ? aws_db_instance.sre_db.endpoint : null
-# }
+output "RDS_HOSTNAME" {
+  description = "RDS instance hostname"
+  value       = var.has_db ? aws_db_instance.sre_db[0].address : null
+}
 
-# output "RDS_HOSTNAME" {
-#   description = "RDS instance hostname"
-#   value       = var.has_db ? aws_db_instance.sre_db.address : null
-#   sensitive   = true
-# }
+output "RDS_PORT" {
+  description = "RDS instance port"
+  value       = var.has_db ? aws_db_instance.sre_db[0].port : null
+}
 
-# output "rds_port" {
-#   description = "RDS instance port"
-#   value       = var.has_db ? aws_db_instance.sre_db.port : null
-# }
+output "RDS_USERNAME" {
+  description = "RDS instance root username"
+  value       = var.has_db ? aws_db_instance.sre_db[0].username : null
+}
 
-# output "rds_username" {
-#   description = "RDS instance root username"
-#   value       = var.has_db ? aws_db_instance.sre_db.username : null
-# }
+output "RDS_DB_NAME" {
+  description = "RDS DB Name"
+  value       = var.has_db ? var.db_name : null
+}
 
-output "rds_password" {
+output "RDS_PASSWORD" {
   description = "RDS password"
   value       = var.has_db ? var.db_password : null
   sensitive   = true
 }
 
-output "rds_db_name" {
-  description = "RDS DB Name"
-  value       = var.has_db ? var.db_name : null
-  sensitive   = true
+output "LB_DNS_NAME" {
+  description = "LB DNS Name"
+  value       = aws_lb.sre_lb.dns_name
 }
 
-output "instance_ips" {
-  value = { for i in aws_instance.sre_main[*] : i.tags.Name => "Log into instance: ssh -i ~/.ssh/devops_rsa ubuntu@${i.public_ip}" }
+output "ssh_into_instance_ips" {
+  value = { for i in aws_instance.sre_main[*] : i.tags.Name => "ssh -i ~/.ssh/devops_rsa ubuntu@${i.public_ip}" }
 }
