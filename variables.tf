@@ -77,7 +77,7 @@ variable "db_password" {
 
 variable "git_url" {
   type        = string
-  description = "Github repo ex: Spoon-Knife"
+  description = "Github repo ex: https://github.com/space-rocket/my_app.git"
   default     = "https://github.com/space-rocket/my_app.git"
 }
 
@@ -98,7 +98,3 @@ variable "deploy_my_app" {
   description = "Deploy Elixir Phoenix application called my_app?"
   default     = false
 }
-
-
-
-
