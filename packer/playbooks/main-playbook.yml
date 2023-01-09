@@ -1,0 +1,9 @@
+---
+- hosts: all
+  become: true
+  gather_facts: true
+  
+  roles:
+    - role: install_aws_cli
+    - role: install_docker
+    
