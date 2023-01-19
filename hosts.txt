@@ -1,4 +1,1 @@
 [servers]
-ubuntu@44.197.215.67
-ubuntu@3.85.53.91
-ubuntu@34.228.222.153
